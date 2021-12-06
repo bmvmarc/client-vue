@@ -1,19 +1,18 @@
 <template>
-    <div>
-      <!--  <menu-bar></menu-bar>-->
-        <div class="app">
-            <h1>APP</h1>
-        </div>
+    <menu-bar></menu-bar>
+    <div class="app">
+        <router-view></router-view>
     </div>
 </template>
 
+
 <script>
-// import MenuBar from '@/components/Menu';
+import MenuBar from './components/Menu.vue';
 
 export default {
-    // components: {
-    //     MenuBar
-    // }
+    components: {
+        MenuBar
+    }
     
 }
 </script>
