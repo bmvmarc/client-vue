@@ -9,15 +9,15 @@
         <div v-show="$store.state.isAuth">
 
             <my-button
-                    @click="$store.dispatch('getUsers')">
+                    @click="getUsers">
                         Load users</my-button>
                 <ul 
                     name="users-list"
-                    v-for="item in $store.getters.allUsersList"
+                    v-for="item in users"
                     :key="item.id">
                         <li class="user">
-                            <div>{{ item.name }}</div>
-                            <div>{{ item.id }}</div>
+                            <div>{{ item.name + ' ' + item.email}}</div>
+                            <div>{{ item._id }}</div>
                         </li>
                 </ul>
 
@@ -27,8 +27,14 @@
 </template>
 
 <script>
+import useGetUsers from '../hooks/useGetUsers.js';
+
 export default {
-    
+    setup(props) {
+        const { getUsers, users } = useGetUsers();
+
+        return { getUsers, users };
+    }
 }
 </script>
 

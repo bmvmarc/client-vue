@@ -19,9 +19,6 @@ export default {
         hideDialog() {
             this.$emit('update:show', false);
         }
-    },
-    mounted() {
-        console.log('dialog mounted')
     }
 }
 </script>

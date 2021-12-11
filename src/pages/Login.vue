@@ -5,12 +5,12 @@
         <div v-show="!$store.state.isAuth">
             <my-button 
                     :class="{ 'active' : authChoise=='login'}" 
-                    @click="authChoise='login'">
+                    @click="authChoise='login'; isRegError = false">
                         Log in</my-button>
 
             <my-button 
                     :class="{ 'active' : authChoise=='registration'}" 
-                    @click="authChoise='registration'">
+                    @click="authChoise='registration'; isLoginError = false">
                         Register</my-button>
         </div>
 
@@ -33,11 +33,11 @@
                 </div>
 
                 <my-button
-                    v-show="!$store.state.isLoading"
+                    v-show="!isLoading"
                     @click="tryToLogIn">
                         SIGN IN</my-button>
 
-                <div v-show="$store.state.isLoginError" class='error-text'>
+                <div v-show="isLoginError" class='error-text'>
                     <h3>Sorry, we have been unable to sign you in.</h3>
                     <h4>Please check your sign in details are correct and try again.</h4>
                 </div>
@@ -63,17 +63,17 @@
                 </div>
 
                 <my-button
-                    v-show="!$store.state.isLoading"
+                    v-show="!isLoading"
                     @click="tryToRegister">
                         REGISTER</my-button>
 
-                <div v-show="$store.state.isRegError" class='error-text'>
+                <div v-show="isRegError" class='error-text'>
                     <h3>Sorry, we have been unable to register you.</h3>
                     <h4>Please check your details are correct and try again.</h4>
                 </div>
 
-                <div v-show="$store.state.regMessage">
-                    <h3> {{$store.state.regMessage}} </h3>
+                <div v-show="regMessage">
+                    <h3> {{regMessage}} </h3>
                 </div>
 
             </div>            
@@ -93,77 +93,31 @@
 
 </template>
 
-
 <script>
-import MyButton from '../components/UI/MyButton.vue';
 import store from '../store';
+import useTryToLogin from '../hooks/useTryToLogin.js';
+import useTryToRegister from '../hooks/useTryToRegister.js';
 
 export default {
 
-    components: {
-        MyButton
-    },
-
     data() {
         return {
-            email: '',
-            password: '',
-            wrongData: false,
-
-            emailReg: '',
-            userNameReg: '',
-            passwordReg: '',
-            wrongDataReg: false,
-
             authChoise: 'login'           
         }
     },
 
-    methods: {
-        tryToLogIn() {
+    setup(props) {
+        const { email, password, wrongData, tryToLogIn, isLoading, isLoginError} = useTryToLogin();
+    
+        const { emailReg, passwordReg, userNameReg, wrongDataReg, 
+                tryToRegister, isRegError, regMessage} = useTryToRegister(isLoading);
 
-            if (this.email == '' || this.password =='') {
-                this.wrongData = true;
-
-            } else {
-                this.wrongData = false;
-                store.dispatch('authUser',{
-                                email: this.email, 
-                                password: this.password
-                            });
-                this.email = '';
-                this.password = '';                                
-            }
-        },
-
-        tryToRegister() {
-
-            if (this.emailReg == '' || this.passwordReg =='') {
-                this.wrongDataReg = true;
-
-            } else {
-                this.wrongDataReg = false;
-                store.dispatch('regUser',{
-                                email: this.emailReg, 
-                                userName: this.userNameReg,
-                                password: this.passwordReg
-                            });
-                this.emailReg = '';
-                this.userNameReg = '';
-                this.passwordReg = '';                                
-            }
-        }        
-    },
-        
-    computed: {
-
-    },
-
-    watch: {
-    },
-    mounted() {
-    },
-}
+        return {email, password, wrongData, tryToLogIn, isLoading, isLoginError,
+                emailReg, passwordReg, userNameReg,  wrongDataReg, tryToRegister, 
+                isRegError, regMessage}  
+    }
+      
+}    
 
 </script>
 
