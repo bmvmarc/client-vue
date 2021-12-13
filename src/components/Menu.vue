@@ -8,8 +8,8 @@
         
             <my-button
                 class="menu-btn"
-                @click="$router.push('/login')">
-                {{  $store.state.isAuth ? $store.state.userName : 'My account'}}
+                @click="$router.push('/tasks')">
+                To do
             </my-button>
 
             <my-button
@@ -17,6 +17,12 @@
                 @click="$router.push('/about')">
                 About
             </my-button>         
+
+            <my-button
+                class="menu-btn"
+                @click="$router.push('/login')">
+                {{  $store.state.isAuth ? $store.state.userName : 'My account'}}
+            </my-button>
 
         </div>
     </div>

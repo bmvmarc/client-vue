@@ -95,8 +95,8 @@
 
 <script>
 import store from '../store';
-import useTryToLogin from '../hooks/useTryToLogin.js';
-import useTryToRegister from '../hooks/useTryToRegister.js';
+import useTryToLogin from '../hooks/auth/useTryToLogin.js';
+import useTryToRegister from '../hooks/auth/useTryToRegister.js';
 
 export default {
 

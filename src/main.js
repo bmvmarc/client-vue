@@ -19,3 +19,11 @@ app
     .use(router)
     .use(store)
     .mount('#app');
+
+
+// Clear after module reload
+window.addEventListener('message', e => {
+    if ('production' !== process.env.NODE_ENV) {
+        console.clear();
+    }
+}); 

@@ -1,6 +1,6 @@
 import {ref} from 'vue';
 import axios from 'axios';
-import store from '../store';
+import store from '../../store';
 
 export default function useTryToLogin() {
 
@@ -23,17 +23,21 @@ export default function useTryToLogin() {
             isLoading.value = true;
             try {
 
-                const response = await axios.post('http://localhost:3030/authentication',
+                const response = await axios.post(store.state.SERVER_URL + '/authentication',
                     {  
                         "strategy": "local",
                         "email":    email.value,
                         "password": password.value
                     });
 
-                store.commit('setUserName',    response.data.user.name);
-                store.commit('setEmail',       response.data.user.email);
-                store.commit('setAccessToken', response.data.accessToken);
-                store.commit('setIsAuth',      true);                
+                store.commit('setUserData',  
+                                {
+                                    userName:    response.data.user.name,
+                                    email:       response.data.user.email,
+                                    userId:      response.data.user._id,
+                                    accessToken: response.data.accessToken,
+                                    isAuth:      true
+                                });
         
             } catch(err) {
                 isLoginError.value = true;

@@ -6,26 +6,26 @@ export default createStore({
         isAuth: false,
         email: '',
         userName: '',
-        accessToken: ''
-    
+        userId: '',
+        accessToken: '',
+        
+        SERVER_URL: 'http://localhost:3030'
+
      }),
 
     mutations: {
-        setIsAuth(state, bool) {
-            state.isAuth = bool;
-        },        
-        setEmail(state, email) {
-            state.email = email;
+
+        setUserData(state, userData) {
+            state.userName    = userData.userName;
+            state.userId      = userData.userId;
+            state.email       = userData.email;
+            state.accessToken = userData.accessToken;
+            state.isAuth      = userData.isAuth;
         },
-        setUserName(state, userName) {
-            state.userName = userName;
-        },
-        setAccessToken(state, accessToken) {
-            state.accessToken = accessToken;
-        },        
 
         deleteUsersData(state) {
             state.userName = '';
+            state.userId = '';
             state.email = '';
             state.accessToken = '';
             state.isAuth = false;

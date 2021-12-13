@@ -1,6 +1,6 @@
-import {ref} from 'vue';
+import {ref, onMounted } from 'vue';
 import axios from 'axios';
-import store from '../store';
+import store from '../../store';
 
 export default function useGetUsers() {
     
@@ -16,11 +16,13 @@ export default function useGetUsers() {
         try {
             const authStr = 'Bearer '.concat(store.state.accessToken); 
           
-            const response = await axios.get('http://localhost:3030/users', 
-                                            { 'headers': { 'Authorization': authStr }});
+            const response = await axios.get(store.state.SERVER_URL + '/users', 
+                                            { 'headers': { 
+                                                    'Authorization': authStr 
+                                                }
+                                            });
 
             users.value = response.data.data;
-            console.log(response.data.data);
   
         } catch(err) {
             console.log('Something went wrong...');
@@ -29,6 +31,12 @@ export default function useGetUsers() {
             isLoading.value = false;
         }   
     }
+
+    onMounted(() => {
+        if (store.state.isAuth) {
+            getUsers();
+        }
+    });
 
     return {
         users, getUsers, isLoginError, isLoading

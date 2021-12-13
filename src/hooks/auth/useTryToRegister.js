@@ -1,5 +1,6 @@
 import {ref} from 'vue';
 import axios from 'axios';
+import store from '../../store';
 
 export default function useTryToRegister(isLoading) {
 
@@ -23,13 +24,12 @@ export default function useTryToRegister(isLoading) {
                 isRegError.value = false;
                 isLoading.value = true;
                 
-                const response = await axios.post('http://localhost:3030/users',
+                const response = await axios.post(store.state.SERVER_URL + '/users',
                         {   
                             "name": userNameReg.value || emailReg.value,
                             "email": emailReg.value,
                             "password": passwordReg.value
                         });
-
                 regMessage.value = 'User has been registered';
                 setTimeout(() => {
                     regMessage.value = '';                  

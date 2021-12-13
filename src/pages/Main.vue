@@ -1,16 +1,11 @@
 <template>
     <div>
-        <h1> Welcome to our wonderful site! </h1>
+        <h1> Users </h1>
 
-        <p v-if="$store.state.isAuth"> You are an authorized user!  </p>
-
-        <p v-else>Please, log in!</p>
+        <p v-show="!$store.state.isAuth">Please, log in!</p>
 
         <div v-show="$store.state.isAuth">
-
-            <my-button
-                    @click="getUsers">
-                        Load users</my-button>
+          
                 <ul 
                     name="users-list"
                     v-for="item in users"
@@ -27,7 +22,7 @@
 </template>
 
 <script>
-import useGetUsers from '../hooks/useGetUsers.js';
+import useGetUsers from '../hooks/users/useGetUsers.js';
 
 export default {
     setup(props) {
