@@ -23,15 +23,22 @@
 
                     <my-select 
                         :options="sortOptions"
-                        v-model="sortField"></my-select>
+                        v-model="sortField">
+                    </my-select>
 
                 </div>
 
-                <my-dialog v-model:show="showAddTaskForm">
+                <my-dialog 
+                    v-model:show="showAddTaskForm"
+                    :class="{'wait': isLoading}">
 
                     <task-form 
                         @create-task="addNewTask">
                     </task-form>
+                    
+                    <div v-show="isError" class='error-text'>
+                        <h3>Sorry, we have been unable to add the task.</h3>
+                    </div> 
 
                 </my-dialog>
                 
@@ -59,7 +66,7 @@
 </template>
 
 
-<script>
+<script>                    
 import TaskForm from '../components/TaskForm.vue';
 import TaskList from '../components/TaskList.vue';
 import {ref} from 'vue';
@@ -86,32 +93,32 @@ export default {
     },
 
     methods: {
-        addNewTask(title, date) {
-            this.addTask({
-                id: this.tasks.length + 1, 
-                title: title, 
-                date: date, 
-                completed: false
-            });
-        
-            this.showAddTaskForm = false;   
-
+        async addNewTask(taskData) {
+            await this.addTask(taskData);
+            if (!this.isError) {
+                this.showAddTaskForm = false;
+                this.fetchTasks();
+            }
         }
+        
     },
 
     setup(props) {
         const { tasks, tasksLoading, errorTasksLoading, fetchTasks} = useTasks();
-        const { sortField, sortedTasks } = useSortedTasks(tasks);
-        const { searchText, searchedTasks } = useSearchedTasks(sortedTasks);
-        const { removeTask } = useRemoveTask(tasks);
-        const { changeTaskCompleted } = useChangeTaskCompleted(tasks);
-        const { addTask } = useAddTask(tasks);
+        const { sortField, sortedTasks } = useSortedTasks( tasks );
+        const { searchText, searchedTasks } = useSearchedTasks( sortedTasks );
+        const { addTask, isError, isLoading } = useAddTask();
+        const { removeTask,  isRemoveError } = useRemoveTask( tasks );
+        const { changeTaskCompleted } = useChangeTaskCompleted( tasks );
+
 
         return {
             tasks, tasksLoading, errorTasksLoading, fetchTasks, 
             sortField, sortedTasks,
             searchText, searchedTasks, 
-            removeTask, changeTaskCompleted, addTask
+            removeTask, isRemoveError,
+            changeTaskCompleted, 
+            addTask, isError, isLoading
         }
     }
     
@@ -124,6 +131,16 @@ export default {
         display: flex;
         justify-content: space-between;
         margin: 15px 0;        
+    }
+
+    .error-text {
+        margin: 15px;
+        border: 2px solid red;
+        border-radius: 5px;
+    }
+
+    .wait {
+        cursor: wait;
     }
 
 </style>

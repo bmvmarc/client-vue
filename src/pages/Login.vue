@@ -25,8 +25,18 @@
                  
 
                 <h3>PASSWORD</h3>
-                <my-input 
-                    v-model="password"></my-input>
+
+                <div class="password-container">
+                    <my-input 
+                        v-model="password"
+                        :type="showPassword ? 'text': 'password'">
+                    </my-input>
+                    <my-button 
+                        @click="showPassword = !showPassword">
+                        {{ showPassword ? 'HIDE': 'SHOW' }}
+                    </my-button>
+                    
+                </div>
 
                 <div v-show="wrongData">
                     <h3 class="warning center"> Please fill in all fields </h3>
@@ -55,8 +65,18 @@
                     v-model="userNameReg"></my-input>                      
 
                 <h3>PASSWORD</h3>
-                <my-input 
-                    v-model="passwordReg"></my-input>
+               
+                <div class="password-container">
+                    <my-input 
+                        v-model="passwordReg"
+                        :type="showPasswordReg ? 'text': 'password'">
+                    </my-input>
+                    <my-button 
+                        @click="showPasswordReg = !showPasswordReg">
+                        {{ showPasswordReg ? 'HIDE': 'SHOW' }}
+                    </my-button>
+                    
+                </div>
 
                 <div v-show="wrongDataReg">
                     <h3 class="warning center"> Please fill in all fields </h3>
@@ -102,7 +122,9 @@ export default {
 
     data() {
         return {
-            authChoise: 'login'           
+            authChoise: 'login',
+            showPassword: false,
+            showPasswordReg: false         
         }
     },
 
@@ -162,4 +184,25 @@ export default {
         background-color: lightblue;
     }
 
+    .password-container{
+        display: flex;
+        margin-top: 15px;
+    }
+
+    .password-container .btn{
+        margin: 0;
+        border-radius: 0 5px 5px 0;
+        padding: 0;
+    }
+
+    .password-container input{
+        margin-top: 0;
+        border-radius: 5px 0 0 5px;
+    }
+    .password-container input:focus{
+        outline: none;
+        border-radius: 5px 0 0 5px;
+        border: solid 2px black;
+        margin: -1px;
+    }
 </style>

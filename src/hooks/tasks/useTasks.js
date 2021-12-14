@@ -22,8 +22,8 @@ export default  function useTasks() {
                 store.state.SERVER_URL + '/tasks', 
                 {   
                     'headers': { 'Authorization': authStr },
-                    'body': {                  
-                        userId: store.state.userId                    
+                    'params': {                  
+                        user_id: store.state.userId                    
                     }
                 });
 
