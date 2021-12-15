@@ -39,7 +39,7 @@ export default {
             title: '',
             date: '',
             wrongData: '',
-            today:  ''
+            today:  (new Date()).toISOString().slice(0, 10)
         }
     },
 
@@ -61,10 +61,7 @@ export default {
                                             'date': this.date});
             }
         }
-    },
-    mounted() {
-        this.today = (new Date()).toISOString().slice(0, 10);
-     },
+    }
 }
 </script>
 

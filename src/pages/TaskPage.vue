@@ -39,7 +39,7 @@
                 
                 <task-list 
                     :tasks="searchedTasks"
-                    @change-task-completed="changeTaskCompleted"
+                    @change-task="changeTask"
                     @remove="removeTask">
                 </task-list>
             </div>  
@@ -72,7 +72,7 @@ import useTasks from '../hooks/tasks/useTasks.js';
 import useSortedTasks from '../hooks/tasks/useSortedTasks.js';
 import useSearchedTasks from '../hooks/tasks/useSearchedTasks.js';
 import useRemoveTask from '../hooks/tasks/useRemoveTask.js';
-import useChangeTaskCompleted from '../hooks/tasks/useChangeTaskCompleted.js';
+import useChangeTask from '../hooks/tasks/useChangeTask.js';
 import useAddTask from '../hooks/tasks/useAddTask.js';
 
 
@@ -116,7 +116,7 @@ export default {
         const { searchText, searchedTasks } = useSearchedTasks( sortedTasks );
         const { addTask, isError, isLoading } = useAddTask();
         const { removeTask,  isRemoveError } = useRemoveTask( tasks );
-        const { changeTaskCompleted } = useChangeTaskCompleted( tasks );
+        const { changeTask } = useChangeTask( tasks );
 
 
         return {
@@ -124,7 +124,7 @@ export default {
             sortField, sortedTasks,
             searchText, searchedTasks, 
             removeTask, isRemoveError,
-            changeTaskCompleted, 
+            changeTask, 
             addTask, isError, isLoading
         }
     }

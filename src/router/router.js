@@ -3,7 +3,6 @@ import Main from '../pages/Main.vue';
 import About from '../pages/About.vue';
 import Login from '../pages/Login.vue'
 import TaskPage from '../pages/TaskPage.vue'
-import TaskItemPage from '../pages/TaskItemPage.vue'
 
 const routes = [
     {
@@ -24,11 +23,6 @@ const routes = [
     {
         path: '/tasks',
         component: TaskPage
-    },
-
-    {
-        path: '/tasks/:id',
-        component: TaskItemPage
     }
 ]
 

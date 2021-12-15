@@ -10,7 +10,7 @@
                 v-for="task in tasks"
                 :key="task._id"
                 :task="task"
-                @change-task-completed="$emit('change-task-completed', task._id)"
+                @change-task="(task) => $emit('change-task', task)"
                 @remove="$emit('remove', task._id)">
             </task-item>
       
@@ -31,7 +31,7 @@ export default {
         TaskItem
     },
 
-    emits: ["change-task-completed", "remove"],
+    emits: ["change-task", "remove"],
 
     props: {
         tasks: {
