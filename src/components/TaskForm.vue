@@ -4,17 +4,18 @@
         <h4>Add a task</h4>
       
         <textarea 
+            v-focus
             placeholder="enter"
             v-model="title"
             rows="4"/> 
                 
         <my-input
             type="date"
-            v-model="date">
+            v-model="date"
+            :min="today">
         </my-input>
 
         <my-button
-            v-focus
             type="button"
             class="btn"
             @click="checkAndAddTask">
@@ -22,7 +23,7 @@
         </my-button>
     
         <div v-show="wrongData">
-            <h3 class="warning"> Please fill the task field </h3>
+            <h3 class="warning"> {{ wrongData }} </h3>
         </div>    
 
     </form>
@@ -37,22 +38,33 @@ export default {
         return {
             title: '',
             date: '',
-            wrongData: false
+            wrongData: '',
+            today:  ''
         }
     },
 
     methods: {
         checkAndAddTask() {
             
+            const chosen = Date.parse(this.date);
+            const today = Date.parse(this.today);
+
             if (this.title == '') {
-                this.wrongData = true;
+                this.wrongData = 'Please fill the task field';
+
+            } else if (chosen < today) {
+                this.wrongData = 'Expired date';
+            
             } else {
-                this.wrongData = false;
+                this.wrongData = '';
                 this.$emit('create-task', {'title': this.title, 
                                             'date': this.date});
             }
         }
-    }
+    },
+    mounted() {
+        this.today = (new Date()).toISOString().slice(0, 10);
+     },
 }
 </script>
 

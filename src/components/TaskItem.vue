@@ -4,7 +4,6 @@
         :class="{'completed': task.completed, 
                  'not-completed': task.completed
                 }">
-        <div class="task-item"> {{ task._id }} </div>
         <div class="date task-item"> {{ task.date || 'no deadline' }} </div>
         <div class="title task-item"> {{ task.title }} </div>
         
@@ -54,6 +53,7 @@ export default {
         margin-top: 15px;
         justify-content: space-between;
         align-items: flex-start;
+        border-radius: 5px;
     }   
     .title {
         white-space: pre-line;

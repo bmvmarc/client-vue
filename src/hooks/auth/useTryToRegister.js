@@ -8,9 +8,6 @@ export default function useTryToRegister(isLoading) {
     const userNameReg = ref('');
     const passwordReg = ref('');
     const wrongDataReg = ref(false);
- 
-    const regMessage = ref('');
-
     const isRegError = ref(false);
 
     const tryToRegister = async () =>  {
@@ -30,10 +27,6 @@ export default function useTryToRegister(isLoading) {
                             "email": emailReg.value,
                             "password": passwordReg.value
                         });
-                regMessage.value = 'User has been registered';
-                setTimeout(() => {
-                    regMessage.value = '';                  
-                }, 5000);               
 
             } catch(err) {
                 isRegError.value = true;
@@ -55,8 +48,7 @@ export default function useTryToRegister(isLoading) {
 
         tryToRegister,
 
-        isRegError,
-        regMessage
+        isRegError
     }
 
 }

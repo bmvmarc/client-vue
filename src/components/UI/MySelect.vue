@@ -48,6 +48,7 @@ export default {
         border: solid 1px teal;
         margin: 15px 0;
         padding: 10px 15px;
+        border-radius: 5px;
     }
 
 </style>

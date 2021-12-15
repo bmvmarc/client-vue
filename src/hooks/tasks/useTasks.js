@@ -8,10 +8,13 @@ export default  function useTasks() {
 
     const tasksLoading = ref(false);
     const errorTasksLoading = ref(false);
+    
+    const curNumber = ref(0);
+    const allTasksLoaded = ref(false);
 
 
     const fetchTasks = async () => {
-    
+
         tasksLoading.value = true;
         errorTasksLoading.value = false;
 
@@ -23,14 +26,20 @@ export default  function useTasks() {
                 {   
                     'headers': { 'Authorization': authStr },
                     'params': {                  
-                        user_id: store.state.userId                    
+                        user_id: store.state.userId,
+                        $skip: curNumber.value                
                     }
                 });
 
-            tasks.value = response.data.data;
+            tasks.value = [...tasks.value, ...response.data.data];
+            
+           
+            curNumber.value = curNumber.value + 10;
 
-            // if (tasks.value.length == response.headers['x-total-count']) {
-            // }
+            if (tasks.value.length == response.data.total) {
+                allTasksLoaded.value = true;
+                console.log('All tasks are loaded');
+            }
 
         }
         catch(err) {
@@ -40,15 +49,10 @@ export default  function useTasks() {
             tasksLoading.value = false;
         }
     }
-    
-    onMounted(() => {
-        if (store.state.isAuth) {
-            fetchTasks();
-        }
-    });
 
     return {
-        tasks, fetchTasks, tasksLoading, errorTasksLoading 
+        tasks, fetchTasks, tasksLoading, errorTasksLoading, 
+        allTasksLoaded, curNumber
     }
 
 }

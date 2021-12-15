@@ -6,27 +6,22 @@
         <div v-show="$store.state.isAuth">
 
             <div v-if="!(tasksLoading || errorTasksLoading)">
-                
-                <my-input
-                    v-focus
-                    type="text" 
-                    v-model="searchText"
-                    placeholder="search...">
-                </my-input>
-
-                <div class="app-btns">
-                    
                     <my-button 
+                        v-focus
                         @click="showAddTaskForm = true">
                         Add task
-                    </my-button>
+                    </my-button>              
+
+                    <my-input
+                        type="text" 
+                        v-model="searchText"
+                        placeholder="search...">
+                    </my-input>
 
                     <my-select 
                         :options="sortOptions"
                         v-model="sortField">
                     </my-select>
-
-                </div>
 
                 <my-dialog 
                     v-model:show="showAddTaskForm"
@@ -56,6 +51,9 @@
             <div v-else>
                 Loading error
             </div>
+
+            <div class="observer" v-intersection="fetchTasksIfNeed">  </div>
+
         </div>
 
         <div v-show="!$store.state.isAuth">
@@ -97,14 +95,23 @@ export default {
             await this.addTask(taskData);
             if (!this.isError) {
                 this.showAddTaskForm = false;
+                this.curNumber = 0;
+                this.tasks = [];
                 this.fetchTasks();
+            }
+        },
+
+        async fetchTasksIfNeed() {
+            if (!this.allTasksLoaded) {
+                await this.fetchTasks();
             }
         }
         
     },
 
     setup(props) {
-        const { tasks, tasksLoading, errorTasksLoading, fetchTasks} = useTasks();
+        const { tasks, tasksLoading, errorTasksLoading, fetchTasks, 
+                allTasksLoaded, curNumber} = useTasks();
         const { sortField, sortedTasks } = useSortedTasks( tasks );
         const { searchText, searchedTasks } = useSearchedTasks( sortedTasks );
         const { addTask, isError, isLoading } = useAddTask();
@@ -113,7 +120,7 @@ export default {
 
 
         return {
-            tasks, tasksLoading, errorTasksLoading, fetchTasks, 
+            tasks, tasksLoading, errorTasksLoading, fetchTasks, allTasksLoaded, curNumber,
             sortField, sortedTasks,
             searchText, searchedTasks, 
             removeTask, isRemoveError,

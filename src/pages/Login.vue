@@ -2,7 +2,7 @@
 
     <div>
 
-        <div v-show="!$store.state.isAuth">
+        <div class="switch-mode" v-show="!$store.state.isAuth">
             <my-button 
                     :class="{ 'active' : authChoise=='login'}" 
                     @click="authChoise='login'; isRegError = false">
@@ -15,13 +15,17 @@
         </div>
 
         <div class="wrapper">
-            <div class="field" 
-                v-if="authChoise == 'login' && !$store.state.isAuth">
+            <form 
+                class="field" 
+                v-if="authChoise == 'login' && !$store.state.isAuth"
+                @submit.prevent
+                @submit="tryToLogIn">
                 
                 <h3>EMAIL ADDRESS</h3>
                 <my-input 
                     v-focus
-                    v-model="email"></my-input>
+                    v-model="email"
+                    autocomplete="on"></my-input>
                  
 
                 <h3>PASSWORD</h3>
@@ -29,9 +33,11 @@
                 <div class="password-container">
                     <my-input 
                         v-model="password"
+                         autocomplete="on"
                         :type="showPassword ? 'text': 'password'">
                     </my-input>
                     <my-button 
+                        type="button"
                         @click="showPassword = !showPassword">
                         {{ showPassword ? 'HIDE': 'SHOW' }}
                     </my-button>
@@ -43,6 +49,7 @@
                 </div>
 
                 <my-button
+                    type="submit"
                     v-show="!isLoading"
                     @click="tryToLogIn">
                         SIGN IN</my-button>
@@ -51,14 +58,20 @@
                     <h3>Sorry, we have been unable to sign you in.</h3>
                     <h4>Please check your sign in details are correct and try again.</h4>
                 </div>
-            </div>
 
-            <div class="field" v-if="authChoise == 'registration' && !$store.state.isAuth">
+            </form>
+
+            <form 
+                class="field" 
+                v-if="authChoise == 'registration' && !$store.state.isAuth"
+                @submit.prevent
+                @submit="tryToRegister">
                 
                 <h3>EMAIL ADDRESS</h3>
                 <my-input 
                     v-focus
-                    v-model="emailReg"></my-input>
+                    v-model="emailReg"
+                    autocomplete="on"></my-input>
 
                 <h3>YOUR NAME</h3>
                 <my-input 
@@ -69,9 +82,11 @@
                 <div class="password-container">
                     <my-input 
                         v-model="passwordReg"
+                        autocomplete="on"
                         :type="showPasswordReg ? 'text': 'password'">
                     </my-input>
-                    <my-button 
+                    <my-button
+                        type="button" 
                         @click="showPasswordReg = !showPasswordReg">
                         {{ showPasswordReg ? 'HIDE': 'SHOW' }}
                     </my-button>
@@ -83,8 +98,9 @@
                 </div>
 
                 <my-button
+                    type="submit"
                     v-show="!isLoading"
-                    @click="tryToRegister">
+                    @click="reg">
                         REGISTER</my-button>
 
                 <div v-show="isRegError" class='error-text'>
@@ -92,17 +108,13 @@
                     <h4>Please check your details are correct and try again.</h4>
                 </div>
 
-                <div v-show="regMessage">
-                    <h3> {{regMessage}} </h3>
-                </div>
-
-            </div>            
+            </form>            
 
             <div class="field" v-if="$store.state.isAuth">
                 
                 <h3 class="center"> You logged in as {{$store.state.userName.toUpperCase()}} </h3>
                  <my-button
-                    
+                    v-focus
                     @click="$store.dispatch('logOut')">
                         Log out</my-button>
             </div>
@@ -128,15 +140,32 @@ export default {
         }
     },
 
+    methods: {
+        async reg() {
+
+            const email = this.emailReg,
+                  password = this.passwordReg;
+
+            console.log(this.emailReg, this.passwordReg);
+
+            await this.tryToRegister();
+            if (!this.isRegError) {
+                this.authChoise = 'login';
+                this.email = email;
+                this.password = password;
+            }
+        }
+    },
+
     setup(props) {
         const { email, password, wrongData, tryToLogIn, isLoading, isLoginError} = useTryToLogin();
     
         const { emailReg, passwordReg, userNameReg, wrongDataReg, 
-                tryToRegister, isRegError, regMessage} = useTryToRegister(isLoading);
+                tryToRegister, isRegError} = useTryToRegister(isLoading);
 
         return {email, password, wrongData, tryToLogIn, isLoading, isLoginError,
                 emailReg, passwordReg, userNameReg,  wrongDataReg, tryToRegister, 
-                isRegError, regMessage}  
+                isRegError}  
     }
       
 }    
@@ -205,4 +234,12 @@ export default {
         border: solid 2px black;
         margin: -1px;
     }
+
+    .switch-mode {
+        display: flex;
+        width: 200px;
+        margin: auto;
+    }
+
+
 </style>
