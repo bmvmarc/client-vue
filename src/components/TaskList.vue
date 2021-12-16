@@ -2,8 +2,6 @@
    
     <div v-if="tasks.length > 0">
 
-        <h3>Tasks list</h3>
-
         <transition-group name="list">
            
             <task-item 

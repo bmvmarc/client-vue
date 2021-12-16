@@ -1,21 +1,19 @@
 <template>
-    <div>
-        <select 
-            class="select"
-            v-bind:value="modelValue"
-            @change="updateOption">
-                
-                <option disabled value="">--Please choose an option--</option>
-
-                <option 
-                    v-for="opt in options"
-                    :key="opt.val"
-                    :value="opt.val"> {{ opt.name }} 
-                
-                </option>
+    <select 
+        class="select"
+        v-bind:value="modelValue"
+        @change="updateOption">
             
-        </select>
-    </div>
+            <option disabled value="">--Please choose an option--</option>
+
+            <option 
+                v-for="opt in options"
+                :key="opt.val"
+                :value="opt.val"> {{ opt.name }} 
+            
+            </option>
+        
+    </select>
 </template>
 
 

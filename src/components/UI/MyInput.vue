@@ -22,11 +22,15 @@ export default {
 </script>
 
 <style lang="css">
-    .input {
+    .input[type=text], .input[type=password]{
         width: 100%;
         border: solid 1px teal;
         padding: 10px 15px;
         margin-top: 15px;
+        border-radius: 5px;
+    }
+    .input[type=checkbox] {
+        border: solid 1px teal;
         border-radius: 5px;
     }
 </style>

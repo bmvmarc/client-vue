@@ -5,16 +5,30 @@
                  'expired': !task.completed && Date.parse(task.date) < Date.parse(this.today),
                  'changed': isChanged
                 }">
-       
-        <button 
-            @click="completed = !completed; isChanged = true">
-            {{ `${completed ? 'completed' : 'not completed'}` }}
-        </button> 
+                   
+        <div class="head">
+        
+             <my-input 
+                class="top-btn"
+                name='done'
+                type="checkbox"
+                :checked="completed"
+                @click="changeCompleted">
+            </my-input>  
+
+            <my-button 
+                class="top-btn"
+                @click="$emit('remove', task._id)">
+                &#10060;
+            </my-button>
+
+        </div> 
 
         <my-input
             @input="isChanged = true"
             class="date"
             type="date"
+            :disabled="task.completed"
             :min="today"
             v-model="date">
         </my-input>    
@@ -23,24 +37,28 @@
         <textarea 
             @input="isChanged = true"
             v-model="title"
+            :disabled="task.completed"
             rows="4"/> 
 
         <div class="error" v-show="dateError">
             The date is expired. Couldn't save
         </div>
 
-        <div class="task-btns">          
+        <div 
+            class="task-btns"
+            v-if="isChanged">          
 
             <my-button 
-                @click="$emit('remove', task._id)">
-                delete &#10060;
+                @click="cancelChanges">
+                &#128260;
             </my-button>
 
             <my-button 
+                :disabled="task.completed"
                 @click="saveChanges">
-                save &#128190; 
+                &#128190; 
             </my-button>
-
+            
         </div>        
     </div>
 </template>
@@ -86,6 +104,27 @@ export default {
                                     });
 
             this.isChanged = false;
+        },
+
+        changeCompleted() {
+            this.completed = !this.completed; 
+              
+            this.$emit('change-task', {'id':        this.task._id, 
+                                       'date':      this.date,
+                                       "title":     this.title,
+                                       "completed": this.completed
+                                    });
+
+            this.isChanged = false;
+          
+        },
+
+        cancelChanges() {
+            this.date = this.task.date;
+            this.title = this.task.title;
+            this.completed = this.task.completed; 
+            this.isChanged = false;
+            this.dateError = '';
         }
         
     },
@@ -103,7 +142,6 @@ export default {
 <style scoped>
 
     .task {
-       
         box-shadow: 2px 2px 4px gray;
         display: inline-grid;
         border: solid 2px teal;
@@ -116,7 +154,12 @@ export default {
     }   
 
     .changed {
-        border: dashed green 4px;
+        border: solid 5px teal;
+    }
+
+    button {
+        font-weight: normal;
+        border: none;
     }
 
     .date {
@@ -143,16 +186,6 @@ export default {
         border-radius: 5px;
     }
 
-    button {
-        border-radius: 5px;
-        border: solid 1px teal;
-    }
-
-    .completed button, .completed textarea, .completed .date{
-        background-color: rgba(210, 210, 210);
-        color: grey;
-    }
-
     .expired .date {
         color: red;
         font-weight: bold;
@@ -171,6 +204,19 @@ export default {
         border-radius: 5px;
         background-color: white;
         padding: 3px;
+    }
+
+    .head {
+        display: grid;
+        grid-template-columns: 1fr 20px;  
+    }
+
+    .top-btn {
+        padding:0;
+        margin: 0px;
+        width: 20px;
+        height: 17px;
+
     }
 
 </style>

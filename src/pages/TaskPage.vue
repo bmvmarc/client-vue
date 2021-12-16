@@ -6,22 +6,35 @@
         <div v-show="$store.state.isAuth">
 
             <div v-if="!(tasksLoading || errorTasksLoading)">
+ 
+                <div class="menu-btns">
                     <my-button 
+                        class="menu-item"
                         v-focus
                         @click="showAddTaskForm = true">
                         Add task
-                    </my-button>              
+                    </my-button> 
+
+                    <my-button
+                        class="menu-item"
+                        @click="showCompleted = !showCompleted">
+                            {{ showCompleted ? 'Hide completed' : 'Show completed'}}
+                    </my-button>
+
+                    <my-select 
+                        class="menu-item"
+                        :options="sortOptions"
+                        v-model="sortField">
+                    </my-select>
 
                     <my-input
+                        class="menu-item"
                         type="text" 
                         v-model="searchText"
                         placeholder="search...">
                     </my-input>
 
-                    <my-select 
-                        :options="sortOptions"
-                        v-model="sortField">
-                    </my-select>
+                </div>
 
                 <my-dialog 
                     v-model:show="showAddTaskForm"
@@ -113,7 +126,7 @@ export default {
         const { tasks, tasksLoading, errorTasksLoading, fetchTasks, 
                 allTasksLoaded, curNumber} = useTasks();
         const { sortField, sortedTasks } = useSortedTasks( tasks );
-        const { searchText, searchedTasks } = useSearchedTasks( sortedTasks );
+        const { searchText, searchedTasks, showCompleted } = useSearchedTasks( sortedTasks );
         const { addTask, isError, isLoading } = useAddTask();
         const { removeTask,  isRemoveError } = useRemoveTask( tasks );
         const { changeTask } = useChangeTask( tasks );
@@ -122,7 +135,7 @@ export default {
         return {
             tasks, tasksLoading, errorTasksLoading, fetchTasks, allTasksLoaded, curNumber,
             sortField, sortedTasks,
-            searchText, searchedTasks, 
+            searchText, searchedTasks, showCompleted,
             removeTask, isRemoveError,
             changeTask, 
             addTask, isError, isLoading
@@ -133,13 +146,6 @@ export default {
 </script>
 
 <style scoped>
-
-    .app-btns {
-        display: flex;
-        justify-content: space-between;
-        margin: 15px 0;        
-    }
-
     .error-text {
         margin: 15px;
         border: 2px solid red;
@@ -148,6 +154,23 @@ export default {
 
     .wait {
         cursor: wait;
+    }
+
+    .menu-btns {
+        margin: 15px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 2fr;
+        grid-column-gap: 5px;    
+    }
+
+    .menu-item {
+        margin: 0;
+        height: 100%;
+
+    }
+
+    h1 {
+        text-align: center;
     }
 
 </style>
