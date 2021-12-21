@@ -36,6 +36,28 @@ export default createStore({
          
         logOut({state, commit}) {
             commit('deleteUsersData');
-        }              
+        },
+        
+        SOCKET_connect({state, data}) {
+            console.log('connect (store) ', state)
+           
+            if (state.isAuth) {
+               
+                console.log('re-auth')
+
+                this.$socket.emit('create', 'authentication', {
+                        strategy: 'jwt',
+                        accessToken: state.accessToken
+                    }, (error, authResult) => {
+
+                            if (error) {
+                                console.log(error.message); 
+                            } else {
+                                console.log(authResult)                   
+                            }
+                        })
+            }
+
+        }
     }
 });

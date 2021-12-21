@@ -1,52 +1,49 @@
-import {ref} from 'vue';
-import axios from 'axios';
-import store from '../../store';
+import {ref} from 'vue'
+import store from '../../store'
 
 export default function useTryToLogin() {
 
-    const email = ref('');
-    const password = ref('');
-    const wrongData = ref(false);
+    const email = ref('')
+    const password = ref('')
+    const wrongData = ref(false)
+    const isLoading = ref(false)
+    const isLoginError = ref(false)
 
-    const isLoading = ref(false);
-    const isLoginError = ref(false);
-  
-
-    const tryToLogIn = async () =>  {
+    const tryToLogIn = async (sock) =>  {
 
         if (email.value == '' || password.value =='') {
-            wrongData.value = true;
+            wrongData.value = true
 
         } else {
-            wrongData.value = false;
-            isLoginError.value = false;
-            isLoading.value = true;
-            try {
+            wrongData.value = false
+            isLoginError.value = false
+            isLoading.value = true
 
-                const response = await axios.post(store.state.SERVER_URL + '/authentication',
-                    {  
-                        "strategy": "local",
-                        "email":    email.value,
-                        "password": password.value
-                    });
+            sock.emit('create', 'authentication', {
+                strategy: 'local',
+                email: email.value,
+                password: password.value
+                }, (error, authResult) => {
 
-                store.commit('setUserData',  
-                                {
-                                    userName:    response.data.user.name,
-                                    email:       response.data.user.email,
-                                    userId:      response.data.user._id,
-                                    accessToken: response.data.accessToken,
-                                    isAuth:      true
-                                });
-        
-            } catch(err) {
-                isLoginError.value = true;
-            } finally {
-                isLoading.value = false;
-            }
-
-            email.value = '';
-            password.value = '';                                
+                    if (error) {
+                        console.log(error.message); 
+                        isLoginError.value = true;  
+                    } else {
+                        store.commit('setUserData',  
+                                        {
+                                            userName:    authResult.user.name,
+                                            email:       authResult.user.email,
+                                            userId:      authResult.user._id,
+                                            accessToken: authResult.accessToken,
+                                            isAuth:      true
+                                        });
+                       
+                        email.value = '';
+                        password.value = '';                                        
+                    }
+                    isLoading.value = false;
+            })
+   
         }
     }
 
@@ -54,11 +51,8 @@ export default function useTryToLogin() {
         email,
         password,
         wrongData,
-
         tryToLogIn,
-        
         isLoading,
         isLoginError
     }
-
 }

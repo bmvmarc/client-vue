@@ -19,7 +19,7 @@
                 class="field" 
                 v-if="authChoise == 'login' && !$store.state.isAuth"
                 @submit.prevent
-                @submit="tryToLogIn">
+                @submit="tryToLogIn($socket)">
                 
                 <h3>EMAIL ADDRESS</h3>
                 <my-input 
@@ -50,8 +50,7 @@
 
                 <my-button
                     type="submit"
-                    v-show="!isLoading"
-                    @click="tryToLogIn">
+                    v-show="!isLoading">
                         SIGN IN</my-button>
 
                 <div v-show="isLoginError" class='error-text'>
@@ -65,7 +64,7 @@
                 class="field" 
                 v-if="authChoise == 'registration' && !$store.state.isAuth"
                 @submit.prevent
-                @submit="tryToRegister">
+                @submit="reg">
                 
                 <h3>EMAIL ADDRESS</h3>
                 <my-input 
@@ -99,8 +98,7 @@
 
                 <my-button
                     type="submit"
-                    v-show="!isLoading"
-                    @click="reg">
+                    v-show="!isLoading">
                         REGISTER</my-button>
 
                 <div v-show="isRegError" class='error-text'>
@@ -146,9 +144,7 @@ export default {
             const email = this.emailReg,
                   password = this.passwordReg;
 
-            console.log(this.emailReg, this.passwordReg);
-
-            await this.tryToRegister();
+            await this.tryToRegister(this.$socket);
             if (!this.isRegError) {
                 this.authChoise = 'login';
                 this.email = email;

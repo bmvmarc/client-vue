@@ -5,7 +5,7 @@
         <p v-show="!$store.state.isAuth">Please, log in!</p>
 
         <div v-show="$store.state.isAuth">
-          
+                <my-button @click="load">Load users</my-button>
                 <ul 
                     name="users-list"
                     v-for="item in users"
@@ -18,6 +18,10 @@
 
         </div>
 
+        <div v-show="loadErr">
+            <h3> {{ loadErr }} </h3>
+        </div>
+
     </div>
 </template>
 
@@ -26,9 +30,16 @@ import useGetUsers from '../hooks/users/useGetUsers.js';
 
 export default {
     setup(props) {
-        const { getUsers, users } = useGetUsers();
+        const { getUsers, users, loadErr } = useGetUsers();
+        return { getUsers, users, loadErr };
+    },
 
-        return { getUsers, users };
+    methods: {
+        load() {
+            if (this.$store.state.isAuth) {
+                this.getUsers(this.$socket);
+            }
+        }
     }
 }
 </script>

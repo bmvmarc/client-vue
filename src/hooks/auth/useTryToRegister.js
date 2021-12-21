@@ -1,6 +1,4 @@
 import {ref} from 'vue';
-import axios from 'axios';
-import store from '../../store';
 
 export default function useTryToRegister(isLoading) {
 
@@ -10,33 +8,34 @@ export default function useTryToRegister(isLoading) {
     const wrongDataReg = ref(false);
     const isRegError = ref(false);
 
-    const tryToRegister = async () =>  {
+    const tryToRegister = async (sock) =>  {
        
         if (emailReg.value == '' || passwordReg.value =='') {
             wrongDataReg.value = true;
 
         } else {
             wrongDataReg.value = false;
-             try {
-                isRegError.value = false;
-                isLoading.value = true;
-                
-                const response = await axios.post(store.state.SERVER_URL + '/users',
-                        {   
-                            "name": userNameReg.value || emailReg.value,
-                            "email": emailReg.value,
-                            "password": passwordReg.value
-                        });
+            isRegError.value = false;
+            isLoading.value = true;
+            
+            sock.emit('create', 'users', {
+                name: userNameReg.value || emailReg.value,
+                email: emailReg.value,
+                password: passwordReg.value
+                }, (error, result) => {
 
-            } catch(err) {
-                isRegError.value = true;
-            } finally {
-                isLoading.value = false;
-            }            
-
-            emailReg.value = '';
-            userNameReg.value = '';
-            passwordReg.value = '';                                
+                    if (error) {
+                        console.log(error.message); 
+                        isRegError.value = true;  
+                    } else {
+                        console.log(result); 
+                        emailReg.value = '';
+                        userNameReg.value = '';
+                        passwordReg.value = '';                                       
+                    }
+                    isLoading.value = false;
+            });           
+                                
         }
     }
 
@@ -45,9 +44,7 @@ export default function useTryToRegister(isLoading) {
         userNameReg,
         passwordReg,
         wrongDataReg,
-
         tryToRegister,
-
         isRegError
     }
 

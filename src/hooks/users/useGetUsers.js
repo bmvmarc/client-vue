@@ -1,45 +1,30 @@
-import {ref, onMounted } from 'vue';
-import axios from 'axios';
-import store from '../../store';
+import { ref } from 'vue'
 
-export default function useGetUsers() {
-    
-    const users = ref([]);
-    const isLoading = ref(false);
-    const isLoginError = ref(false);
+export default function useGetUsers(sock) {
 
-    const getUsers = async () =>  {
+    const users = ref([])
+    const isLoading = ref(false)
+    const loadErr = ref('')
 
-        isLoading.value = true;
-        isLoginError.value = false;
+    const getUsers = async (sock) =>  {
 
-        try {
-            const authStr = 'Bearer '.concat(store.state.accessToken); 
-          
-            const response = await axios.get(store.state.SERVER_URL + '/users', 
-                                            { 'headers': { 
-                                                    'Authorization': authStr 
-                                                }
-                                            });
+        isLoading.value = true
+        loadErr.value = ''
 
-            users.value = response.data.data;
-  
-        } catch(err) {
-            console.log('Something went wrong...');
-            isLoginError.value = true;
-        } finally {
-            isLoading.value = false;
-        }   
+        sock.emit('find', 'users', (error, result) => {
+                
+            if (error) {
+                loadErr.value = error.message
+            } else {
+                users.value = result.data           
+            }
+
+            isLoading.value = false
+        })    
     }
 
-    onMounted(() => {
-        if (store.state.isAuth) {
-            getUsers();
-        }
-    });
-
     return {
-        users, getUsers, isLoginError, isLoading
+        users, getUsers, loadErr, isLoading
     }
 
 }

@@ -52,7 +52,7 @@
                 
                 <task-list 
                     :tasks="searchedTasks"
-                    @change-task="changeTask"
+                    @change-task="(taskData) => changeTask(taskData, $socket )"
                     @remove="removeTask">
                 </task-list>
             </div>  
@@ -105,18 +105,18 @@ export default {
 
     methods: {
         async addNewTask(taskData) {
-            await this.addTask(taskData);
+            await this.addTask( taskData, this.$socket );
             if (!this.isError) {
                 this.showAddTaskForm = false;
                 this.curNumber = 0;
                 this.tasks = [];
-                this.fetchTasks();
+                this.fetchTasks( this.$socket )
             }
         },
 
         async fetchTasksIfNeed() {
             if (!this.allTasksLoaded) {
-                await this.fetchTasks();
+                await this.fetchTasks( this.$socket )
             }
         }
         

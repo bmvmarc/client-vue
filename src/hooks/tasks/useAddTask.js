@@ -1,35 +1,35 @@
-import {ref} from 'vue';
-import axios from 'axios';
-import store from '../../store';
+import { ref } from 'vue'
+import store from '../../store'
 
 export default function useAddTask() {
 
-    const isError = ref(false);
-    const isLoading = ref(false);
+    const isError = ref(false)
+    const isLoading = ref(false)
 
-    const addTask = async ({title, date}) =>  {
+    const addTask = async ({title, date}, sock) =>  {
        
-        isError.value = false;
-        isLoading.value = true;             
+        isError.value = false
+        isLoading.value = true            
         
-        try {
-            const authStr = 'Bearer '.concat(store.state.accessToken); 
-            const response = await axios.post(store.state.SERVER_URL + '/tasks',
-                    {                  
-                        "date": date,
-                        "title": title,
-                        "user_id": store.state.userId,
-                        "completed": false                    
-                    },
-                    {   
-                        headers: { 'Authorization': authStr },
-                    });          
+        sock.emit('create', 'tasks', 
+                {                  
+                    date,
+                    title,
+                    user_id: store.state.userId,
+                    completed: false                    
+                },
+                (error, result) => {
+            
+                    if (error) {
 
-        } catch(err) {
-            isError.value = true;
-        } finally {
-            isLoading.value = false;
-        }            
+                        isError.value = true
+                        console.log('Something went wrong...')
+
+                    } else {
+                        console.log(result)  
+                    }
+                    isLoading.value = false
+                })           
     }
 
     return {
@@ -37,5 +37,4 @@ export default function useAddTask() {
         isError,
         isLoading
     }
-
 }
