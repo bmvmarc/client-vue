@@ -14,34 +14,16 @@ export default {
         MenuBar
     },
 
-    sockets: {
-        connect() {
+    methods: {
+        receiveMessage (payload) {
             console.log('socket connected (app.vue)')
-
-            // if (this.$store.state.isAuth) {
-               
-            //     console.log('re-auth')
-
-            //     this.$socket.emit('create', 'authentication', {
-            //             strategy: 'jwt',
-            //             accessToken: this.$store.state.accessToken
-            //         }, (error, authResult) => {
-
-            //                 if (error) {
-            //                     console.log(error.message); 
-            //                 } else {
-            //                     console.log(authResult)                   
-            //                 }
-            //             })
-            // }
         },
-        create(data) {
-            console.log('this method was fired by the socket server. eg: io.emit("create", data)')
-        },
-        authenticate(data) {
-            console.log('authenticated: ' , data)
-        }
-    }  
+    }, 
+
+    created() {
+        this.$socket.on('connect', this.receiveMessage)
+    }
+ 
 }
 </script>
 

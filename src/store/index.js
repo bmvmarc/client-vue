@@ -1,15 +1,19 @@
-import { createStore } from 'vuex';
+import { createStore } from 'vuex'
+import createWebSocketPlugin from '../socket/websocketStorePlugin.js'
+import socket from '../socket/socket.js'
+
+const websocketPlugin = createWebSocketPlugin(socket)
 
 export default createStore({
+    plugins: [websocketPlugin],
+
     state: () => ({
        
         isAuth: false,
         email: '',
         userName: '',
         userId: '',
-        accessToken: '',
-        
-        SERVER_URL: 'http://localhost:3030'
+        accessToken: ''
 
      }),
 
@@ -36,10 +40,14 @@ export default createStore({
          
         logOut({state, commit}) {
             commit('deleteUsersData');
-        },
+        },         
+        // SOCKET_create ({ commit }, payload) {
+        //     // commit('doSomethingWithMessage', payload)
+        //     console.log(payload)
+        // },        
         
-        SOCKET_connect({state, data}) {
-            console.log('connect (store) ', state)
+        SOCKET_connect({state}) {
+            console.log('connect (store) ')
            
             if (state.isAuth) {
                
@@ -53,7 +61,7 @@ export default createStore({
                             if (error) {
                                 console.log(error.message); 
                             } else {
-                                console.log(authResult)                   
+                                console.log('re-auth is successful')                   
                             }
                         })
             }

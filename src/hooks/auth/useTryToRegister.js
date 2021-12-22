@@ -1,4 +1,5 @@
 import {ref} from 'vue';
+import socket from '../../socket/socket.js'
 
 export default function useTryToRegister(isLoading) {
 
@@ -8,7 +9,7 @@ export default function useTryToRegister(isLoading) {
     const wrongDataReg = ref(false);
     const isRegError = ref(false);
 
-    const tryToRegister = async (sock) =>  {
+    const tryToRegister = async () =>  {
        
         if (emailReg.value == '' || passwordReg.value =='') {
             wrongDataReg.value = true;
@@ -18,7 +19,7 @@ export default function useTryToRegister(isLoading) {
             isRegError.value = false;
             isLoading.value = true;
             
-            sock.emit('create', 'users', {
+            socket.emit('create', 'users', {
                 name: userNameReg.value || emailReg.value,
                 email: emailReg.value,
                 password: passwordReg.value

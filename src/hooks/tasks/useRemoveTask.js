@@ -1,31 +1,26 @@
-import {ref} from 'vue';
-import axios from 'axios';
-import store from '../../store';
+import { ref } from 'vue'
+import socket from '../../socket/socket.js'
 
 export default function useAddTask(tasks) {
 
-    const isRemoveError = ref(false);
-    const isLoading = ref(false);
+    const isRemoveError = ref(false)
+    const isLoading = ref(false)
 
     const removeTask = async (id) =>  {
        
-        isRemoveError.value = false;
-        isLoading.value = true;             
-        
-        try {
-            const authStr = 'Bearer '.concat(store.state.accessToken); 
-            const response = await axios.delete(store.state.SERVER_URL + `/tasks/${id}`,
-                    {   
-                        headers: { 'Authorization': authStr },
-                    });          
-            
-            tasks.value = tasks.value.filter(el => el._id != id);
-
-        } catch(err) {
-            isRemoveError.value = true;
-        } finally {
-            isLoading.value = false;
-        }            
+        isRemoveError.value = false
+        isLoading.value = true             
+ 
+        socket.emit('remove', 'tasks', id,
+                    (error) => {
+                        if (error) {
+                            isRemoveError.value = true
+                            console.log(error)
+                        } else {
+                            tasks.value = tasks.value.filter(el => el._id != id)
+                        }
+                        isLoading.value = false
+                    })                    
     }
 
     return {

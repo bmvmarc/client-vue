@@ -9,7 +9,7 @@
                 <ul 
                     name="users-list"
                     v-for="item in users"
-                    :key="item.id">
+                    :key="item._id">
                         <li class="user">
                             <div>{{ item.name + ' ' + item.email}}</div>
                             <div>{{ item._id }}</div>
@@ -37,10 +37,23 @@ export default {
     methods: {
         load() {
             if (this.$store.state.isAuth) {
-                this.getUsers(this.$socket);
+                this.getUsers();
             }
+        },
+        receiveMessage (payload) {
+            console.log('need to add a new user', payload)
+            this.users.push(payload)
         }
+    },
+
+    created() {
+        this.$socket.on('users created', this.receiveMessage)
+    },
+  
+    destroyed () {
+        this.$socket.removeAllListeners('users created')
     }
+
 }
 </script>
 

@@ -1,17 +1,18 @@
 import { ref } from 'vue'
 import store from '../../store'
+import socket from '../../socket/socket.js'
 
 export default function useAddTask() {
 
     const isError = ref(false)
     const isLoading = ref(false)
 
-    const addTask = async ({title, date}, sock) =>  {
+    const addTask = async ({title, date}) =>  {
        
         isError.value = false
         isLoading.value = true            
         
-        sock.emit('create', 'tasks', 
+        socket.emit('create', 'tasks', 
                 {                  
                     date,
                     title,
@@ -19,15 +20,13 @@ export default function useAddTask() {
                     completed: false                    
                 },
                 (error, result) => {
-            
+                    // console.log('add a task result:', result)
                     if (error) {
 
                         isError.value = true
                         console.log('Something went wrong...')
 
-                    } else {
-                        console.log(result)  
-                    }
+                    } 
                     isLoading.value = false
                 })           
     }

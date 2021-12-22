@@ -1,5 +1,6 @@
 import {ref} from 'vue'
 import store from '../../store'
+import socket from '../../socket/socket.js'
 
 export default function useTryToLogin() {
 
@@ -9,7 +10,7 @@ export default function useTryToLogin() {
     const isLoading = ref(false)
     const isLoginError = ref(false)
 
-    const tryToLogIn = async (sock) =>  {
+    const tryToLogIn = async () =>  {
 
         if (email.value == '' || password.value =='') {
             wrongData.value = true
@@ -19,7 +20,7 @@ export default function useTryToLogin() {
             isLoginError.value = false
             isLoading.value = true
 
-            sock.emit('create', 'authentication', {
+            socket.emit('create', 'authentication', {
                 strategy: 'local',
                 email: email.value,
                 password: password.value

@@ -144,7 +144,7 @@ export default {
             const email = this.emailReg,
                   password = this.passwordReg;
 
-            await this.tryToRegister(this.$socket);
+            await this.tryToRegister();
             if (!this.isRegError) {
                 this.authChoise = 'login';
                 this.email = email;

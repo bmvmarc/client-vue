@@ -52,7 +52,7 @@
                 
                 <task-list 
                     :tasks="searchedTasks"
-                    @change-task="(taskData) => changeTask(taskData, $socket )"
+                    @change-task="changeTask"
                     @remove="removeTask">
                 </task-list>
             </div>  
@@ -81,7 +81,7 @@
 import TaskForm from '../components/TaskForm.vue';
 import TaskList from '../components/TaskList.vue';
 import {ref} from 'vue';
-import useTasks from '../hooks/tasks/useTasks.js';
+import useLoadTasks from '../hooks/tasks/useLoadTasks.js';
 import useSortedTasks from '../hooks/tasks/useSortedTasks.js';
 import useSearchedTasks from '../hooks/tasks/useSearchedTasks.js';
 import useRemoveTask from '../hooks/tasks/useRemoveTask.js';
@@ -105,18 +105,20 @@ export default {
 
     methods: {
         async addNewTask(taskData) {
-            await this.addTask( taskData, this.$socket );
+            await this.addTask(taskData)
+
             if (!this.isError) {
-                this.showAddTaskForm = false;
-                this.curNumber = 0;
-                this.tasks = [];
-                this.fetchTasks( this.$socket )
+
+                this.showAddTaskForm = false
+                this.curNumber = 0
+                this.allTasksLoaded = false
+                this.tasks.length = 0
             }
         },
 
         async fetchTasksIfNeed() {
             if (!this.allTasksLoaded) {
-                await this.fetchTasks( this.$socket )
+                await this.fetchTasks();
             }
         }
         
@@ -124,7 +126,7 @@ export default {
 
     setup(props) {
         const { tasks, tasksLoading, errorTasksLoading, fetchTasks, 
-                allTasksLoaded, curNumber} = useTasks();
+                allTasksLoaded, curNumber} = useLoadTasks();
         const { sortField, sortedTasks } = useSortedTasks( tasks );
         const { searchText, searchedTasks, showCompleted } = useSearchedTasks( sortedTasks );
         const { addTask, isError, isLoading } = useAddTask();

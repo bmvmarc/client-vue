@@ -1,7 +1,9 @@
 import { ref } from 'vue'
 import store from '../../store'
+import socket from '../../socket/socket.js'
 
-export default  function useTasks() {
+
+export default  function useLoadTasks() {
 
     const tasks = ref([])
     const tasksLoading = ref(false)
@@ -9,12 +11,14 @@ export default  function useTasks() {
     const curNumber = ref(0)
     const allTasksLoaded = ref(false)
 
-    const fetchTasks = async (sock) => {
+    const fetchTasks = async () => {
+
+        if (curNumber.value != 0) console.log('loading more tasks')
 
         tasksLoading.value = true
         errorTasksLoading.value = false
        
-        sock.emit('find', 'tasks', 
+        socket.emit('find', 'tasks', 
                 { 
                     user_id: store.state.userId, 
                     $skip: curNumber.value 
@@ -27,12 +31,10 @@ export default  function useTasks() {
                         console.log(error)
 
                     } else {
-                        console.log(result)
                         tasks.value = [...tasks.value, ...result.data]
                         curNumber.value = curNumber.value + 10
                         if (tasks.value.length == result.total) {
                             allTasksLoaded.value = true
-                            console.log('All tasks are loaded')
                         }     
 
                     }

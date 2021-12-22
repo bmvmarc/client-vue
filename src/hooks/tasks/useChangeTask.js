@@ -1,12 +1,13 @@
 import { ref } from 'vue'
 import store from '../../store'
+import socket from '../../socket/socket.js'
 
 export default function useChangeTask(tasks) {
 
     const isChangeError = ref(false)
     const isLoading = ref(false)
 
-    const changeTask = async (taskData, sock) =>  {
+    const changeTask = async (taskData) =>  {
        
         isChangeError.value = false
         isLoading.value = true         
@@ -17,7 +18,7 @@ export default function useChangeTask(tasks) {
         taskChange.title = taskData.title
         taskChange.completed = taskData.completed
 
-        sock.emit('update', 'tasks', taskData.id,
+        socket.emit('update', 'tasks', taskData.id,
                 {                  
                     user_id:   store.state.userId, 
                     date:      taskChange.date,
