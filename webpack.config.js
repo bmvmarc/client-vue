@@ -2,6 +2,7 @@ const path = require("path");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { VueLoaderPlugin } = require("vue-loader");
+const webpack = require('webpack');
 
 module.exports = {
     "mode": "development",
@@ -12,7 +13,7 @@ module.exports = {
       path: path.resolve(__dirname, "dist"),
       filename: "[name].[hash].js"
     },
-
+    devtool: 'inline-source-map',
     devServer: {
       port: 5000,
       historyApiFallback: true
@@ -22,6 +23,12 @@ module.exports = {
       new HtmlWebpackPlugin({template: "./src/index.html"}),
       new CleanWebpackPlugin,
       new VueLoaderPlugin(),
+        // Define Bundler Build Feature Flags
+      new webpack.DefinePlugin({
+        // Drop Options API from bundle
+        __VUE_OPTIONS_API__: true,
+        __VUE_PROD_DEVTOOLS__: false
+      }),
     ],
 
     module: {
