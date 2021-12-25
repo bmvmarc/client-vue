@@ -1,8 +1,8 @@
 import { createStore } from 'vuex'
 import createWebSocketPlugin from '../socket/websocketStorePlugin.js'
-import socket from '../socket/socket.js'
+import feathersApp from '../socket/socket.js'
 
-const websocketPlugin = createWebSocketPlugin(socket)
+const websocketPlugin = createWebSocketPlugin(feathersApp)
 
 export default createStore({
     plugins: [websocketPlugin],
@@ -48,23 +48,6 @@ export default createStore({
         
         SOCKET_connect({state}) {
             console.log('connect (store) ')
-           
-            if (state.isAuth) {
-               
-                console.log('re-auth')
-
-                this.$socket.emit('create', 'authentication', {
-                        strategy: 'jwt',
-                        accessToken: state.accessToken
-                    }, (error, authResult) => {
-
-                            if (error) {
-                                console.log(error.message); 
-                            } else {
-                                console.log('re-auth is successful')                   
-                            }
-                        })
-            }
 
         }
     }

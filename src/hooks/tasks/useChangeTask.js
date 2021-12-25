@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import store from '../../store'
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 export default function useChangeTask(tasks) {
 
@@ -18,21 +18,26 @@ export default function useChangeTask(tasks) {
         taskChange.title = taskData.title
         taskChange.completed = taskData.completed
 
-        socket.emit('update', 'tasks', taskData.id,
-                {                  
-                    user_id:   store.state.userId, 
-                    date:      taskChange.date,
-                    title:     taskChange.title,
-                    completed: taskChange.completed                 
-                },
-                (error) => {
-            
-                    if (error) {
-                        isChangeError.value = true
-                        console.log(error)
-                    } 
-                    isLoading.value = false
-                })                    
+
+        feathersApp.service("tasks").update(taskData.id,
+                                            {                  
+                                                user_id:   store.state.userId, 
+                                                date:      taskChange.date,
+                                                title:     taskChange.title,
+                                                completed: taskChange.completed                 
+                                            })
+
+                    .then(result => {
+                        console.log(result)
+                    })
+
+                    .catch(e => {
+                        isChangeError.value = true;  
+                        console.error('Error', e);
+                    })
+
+                    .finally(() => isLoading.value = false)  
+                 
     }
 
     return {

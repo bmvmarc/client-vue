@@ -1,5 +1,5 @@
 import {ref} from 'vue';
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 export default function useTryToRegister(isLoading) {
 
@@ -19,23 +19,25 @@ export default function useTryToRegister(isLoading) {
             isRegError.value = false;
             isLoading.value = true;
             
-            socket.emit('create', 'users', {
-                name: userNameReg.value || emailReg.value,
-                email: emailReg.value,
-                password: passwordReg.value
-                }, (error, result) => {
+            feathersApp.service("users").create({
+                                                    name:     userNameReg.value || emailReg.value,
+                                                    email:    emailReg.value,
+                                                    password: passwordReg.value
+                                                })
 
-                    if (error) {
-                        console.log(error.message); 
-                        isRegError.value = true;  
-                    } else {
-                        console.log(result); 
-                        emailReg.value = '';
-                        userNameReg.value = '';
-                        passwordReg.value = '';                                       
-                    }
-                    isLoading.value = false;
-            });           
+                        .then(result => {
+                                            console.log(result); 
+                                            emailReg.value    = '';
+                                            userNameReg.value = '';
+                                            passwordReg.value = '';                                       
+                                        })
+
+                        .catch(e => {
+                                        isRegError.value = true;  
+                                        console.error('Registration error', e);
+                                    })
+
+                        .finally(() => isLoading.value = false)            
                                 
         }
     }

@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 
 export default function useGetUsers() {
@@ -13,16 +13,20 @@ export default function useGetUsers() {
         isLoading.value = true
         loadErr.value = ''
 
-        socket.emit('find', 'users', (error, result) => {
-                
-            if (error) {
-                loadErr.value = error.message
-            } else {
-                users.value = result.data           
-            }
+        feathersApp.service("users").find()
 
-            isLoading.value = false
-        })    
+                    .then(result => {
+                        console.log(result)
+                        users.value = result.data  
+                    })
+
+                    .catch(e => {
+                        loadErr.value = true;  
+                        console.error('Loading error', e);
+                    })
+
+                    .finally(() => isLoading.value = false)          
+
     }
 
     return {

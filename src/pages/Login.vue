@@ -19,7 +19,7 @@
                 class="field" 
                 v-if="authChoise == 'login' && !$store.state.isAuth"
                 @submit.prevent
-                @submit="tryToLogIn($socket)">
+                @submit="tryToLogIn()">
                 
                 <h3>EMAIL ADDRESS</h3>
                 <my-input 

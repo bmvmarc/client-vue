@@ -12,6 +12,9 @@
   "author": "Marina",
   "license": "ISC",
   "dependencies": {
+    "@feathersjs/authentication-client": "^4.5.11",
+    "@feathersjs/feathers": "^4.5.11",
+    "@feathersjs/socketio-client": "^4.5.11",
     "core-js": "^3.19.3",
     "socket.io-client": "^2.0.0",
     "vue": "^3.2.24",

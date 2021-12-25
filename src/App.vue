@@ -16,12 +16,12 @@ export default {
 
     methods: {
         receiveMessage (payload) {
-            console.log('socket connected (app.vue)')
+            console.log('connected (app.vue)')
         },
     }, 
 
     created() {
-        this.$socket.on('connect', this.receiveMessage)
+        this.$feathersApp.io.on('connect', this.receiveMessage)
     }
  
 }

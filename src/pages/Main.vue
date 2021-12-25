@@ -47,11 +47,11 @@ export default {
     },
 
     created() {
-        this.$socket.on('users created', this.receiveMessage)
+        this.$feathersApp.service('users').on('created', this.receiveMessage)
     },
   
     destroyed () {
-        this.$socket.removeAllListeners('users created')
+        this.$feathersApp.removeAllListeners('users created')
     }
 
 }

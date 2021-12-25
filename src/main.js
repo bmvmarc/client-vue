@@ -4,7 +4,7 @@ import components from './components/UI'
 import router from './router/router'
 import directives from './directives'
 import store from './store'
-import socket from './socket/socket.js'
+import feathersApp from './socket/socket.js'
 
 const app = createApp(App)
 
@@ -16,7 +16,7 @@ directives.forEach(directive => {
     app.directive(directive.name, directive)
 })
 
-app.config.globalProperties.$socket = socket
+app.config.globalProperties.$feathersApp = feathersApp
 
 app
     .use(router)

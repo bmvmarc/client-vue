@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import store from '../../store'
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 
 export default  function useLoadTasks() {
@@ -18,29 +18,29 @@ export default  function useLoadTasks() {
         tasksLoading.value = true
         errorTasksLoading.value = false
        
-        socket.emit('find', 'tasks', 
-                { 
-                    user_id: store.state.userId, 
-                    $skip: curNumber.value 
-                },
-                (error, result) => {
-            
-                    if (error) {
+        feathersApp.service("tasks").find({
+                                            query: {user_id: store.state.userId,
+                                                    $skip: curNumber.value}
+                                        })
 
-                        errorTasksLoading.value = true
-                        console.log(error)
-
-                    } else {
+                    .then(result => {
+                        
+                        console.log(result)
                         tasks.value = [...tasks.value, ...result.data]
                         curNumber.value = curNumber.value + 10
-                        if (tasks.value.length == result.total) {
+                        if (tasks.value.length >= result.total) {
                             allTasksLoaded.value = true
-                        }     
+                        }       
 
-                    }
+                    })
 
-                    tasksLoading.value = false
-                }) 
+                    .catch(e => {
+                        errorTasksLoading.value = true;  
+                        console.error('Loading error', e);
+                    })
+
+                    .finally(() => tasksLoading.value = false)  
+  
     }
 
     return {

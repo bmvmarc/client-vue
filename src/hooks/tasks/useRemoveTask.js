@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 export default function useAddTask(tasks) {
 
@@ -9,18 +9,23 @@ export default function useAddTask(tasks) {
     const removeTask = async (id) =>  {
        
         isRemoveError.value = false
-        isLoading.value = true             
- 
-        socket.emit('remove', 'tasks', id,
-                    (error) => {
-                        if (error) {
-                            isRemoveError.value = true
-                            console.log(error)
-                        } else {
-                            tasks.value = tasks.value.filter(el => el._id != id)
-                        }
-                        isLoading.value = false
-                    })                    
+        isLoading.value = true              
+
+        feathersApp.service("tasks").remove(id)
+
+                    .then(result => {
+                        console.log(result)
+                        tasks.value = tasks.value.filter(el => el._id != id)
+                    })
+
+                    .catch(e => {
+                        isRemoveError.value = true;  
+                        console.error('Remove error', e);
+                    })
+
+                    .finally(() => isLoading.value = false) 
+
+                  
     }
 
     return {

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import store from '../../store'
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 export default function useAddTask() {
 
@@ -12,23 +12,24 @@ export default function useAddTask() {
         isError.value = false
         isLoading.value = true            
         
-        socket.emit('create', 'tasks', 
-                {                  
-                    date,
-                    title,
-                    user_id: store.state.userId,
-                    completed: false                    
-                },
-                (error, result) => {
-                    // console.log('add a task result:', result)
-                    if (error) {
+        feathersApp.service("tasks").create({                  
+                                            date,
+                                            title,
+                                            user_id: store.state.userId,
+                                            completed: false                    
+                                        })
 
-                        isError.value = true
-                        console.log('Something went wrong...')
+                    .then(result => {
+                        console.log(result);                                      
+                    })
 
-                    } 
-                    isLoading.value = false
-                })           
+                    .catch(e => {
+                        isError.value = true;  
+                        console.error('Error', e);
+                    })
+
+                    .finally(() => isLoading.value = false)            
+       
     }
 
     return {

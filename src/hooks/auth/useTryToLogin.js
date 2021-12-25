@@ -1,6 +1,6 @@
 import {ref} from 'vue'
 import store from '../../store'
-import socket from '../../socket/socket.js'
+import feathersApp from '../../socket/socket.js'
 
 export default function useTryToLogin() {
 
@@ -20,30 +20,33 @@ export default function useTryToLogin() {
             isLoginError.value = false
             isLoading.value = true
 
-            socket.emit('create', 'authentication', {
-                strategy: 'local',
-                email: email.value,
-                password: password.value
-                }, (error, authResult) => {
+            feathersApp.authenticate({
+                                        strategy: 'local',
+                                        email: email.value,
+                                        password: password.value
+                                    })
 
-                    if (error) {
-                        console.log(error.message); 
-                        isLoginError.value = true;  
-                    } else {
-                        store.commit('setUserData',  
-                                        {
-                                            userName:    authResult.user.name,
-                                            email:       authResult.user.email,
-                                            userId:      authResult.user._id,
-                                            accessToken: authResult.accessToken,
-                                            isAuth:      true
-                                        });
-                       
-                        email.value = '';
-                        password.value = '';                                        
-                    }
-                    isLoading.value = false;
-            })
+                        .then((authResult) => {
+                                store.commit('setUserData',  
+                                {
+                                    userName:    authResult.user.name,
+                                    email:       authResult.user.email,
+                                    userId:      authResult.user._id,
+                                    accessToken: authResult.accessToken,
+                                    isAuth:      true
+                                });
+                                
+                                email.value = '';
+                                password.value = '';
+
+                            })
+                        
+                        .catch(e => {
+                                isLoginError.value = true;  
+                                console.error('Authentication error', e);
+                            })
+                        
+                        .finally(() => isLoading.value = false)
    
         }
     }
