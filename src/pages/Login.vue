@@ -108,14 +108,9 @@
 
             </form>            
 
-            <div class="field" v-if="$store.state.isAuth">
-                
-                <h3 class="center"> You logged in as {{$store.state.userName.toUpperCase()}} </h3>
-                 <my-button
-                    v-focus
-                    @click="$store.dispatch('logOut')">
-                        Log out</my-button>
-            </div>
+            <profile
+                v-if="$store.state.isAuth">
+            </profile> 
 
         </div>     
 
@@ -124,17 +119,20 @@
 </template>
 
 <script>
-import store from '../store';
-import useTryToLogin from '../hooks/auth/useTryToLogin.js';
-import useTryToRegister from '../hooks/auth/useTryToRegister.js';
+import store from '../store'
+import useTryToLogin from '../hooks/auth/useTryToLogin.js'
+import useTryToRegister from '../hooks/auth/useTryToRegister.js'
+import Profile from '../components/Profile.vue'
 
 export default {
+
+    components: {Profile},
 
     data() {
         return {
             authChoise: 'login',
             showPassword: false,
-            showPasswordReg: false         
+            showPasswordReg: false       
         }
     },
 
