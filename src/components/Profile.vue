@@ -81,6 +81,7 @@ export default {
                                     })
                         .then((response) => {
                                 console.log('Server responded with: ', response)
+                                this.getFiles()
                             })                      
                         .catch(e => { 
                                 console.error('Upload error', e)
